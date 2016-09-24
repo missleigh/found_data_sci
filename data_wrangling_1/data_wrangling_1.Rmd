@@ -1,0 +1,99 @@
+---
+title: "Data Wrangling 1"
+author: "Leigh Fonseca"
+date: "September 1, 2016"
+output: html_document
+---
+
+Setup R
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load the tidyr and dplyr libraries
+```{r, echo=FALSE}
+library(tidyr)
+library(dplyr)
+```
+
+Load CSV file and create a data frame
+```{r}
+refine_original <- read.csv("refine_original.csv")
+refine_df <- tbl_df(refine_original)
+```
+
+Clean up brand names
+<!-- Clean up the 'company' column, so all of the misspellings of the brand names are standardized. For example, you can transform the values in the column to be: philips, akzo, van houten and unilever (all lowercase). -->
+```{r}
+refine_df <- refine_df %>%
+mutate(first_letter = substr(tolower(company),1,1)) %>%
+
+# refine_df$first_letter
+
+# refine_co <- refine_df %>%
+mutate(company = ifelse(first_letter == "p", "philips",
+		ifelse(first_letter == "a", "akzo",
+		ifelse(first_letter == "v", "van houten",
+			ifelse(first_letter == "u", "unilever","unknown")))))
+
+refine_df$company
+```
+
+Separate product code and number
+<!-- Separate the product code and product number into separate columns i.e. add two new columns called product_code and product_number, containing the product code and number respectively -->
+```{r}
+refine_df <- refine_df %>%
+  separate(Product.code...number, into = c("product_code","product_number"), sep = "-")
+
+```
+
+Transform Product Codes to Product Categories
+<!-- You learn that the product codes actually represent the following product categories:
+p = Smartphone
+v = TV
+x = Laptop
+q = Tablet -->
+
+```{r}
+refine_df <- refine_df %>%
+mutate(product_category = ifelse(product_code == "p", "Smartphone",
+	ifelse(product_code == "v", "TV",
+		ifelse(product_code == "x", "Laptop",
+			ifelse(product_code == "q", "Tablet", "Unknown")))))
+
+refine_df$product_category
+```
+
+Add full address for geocoding
+<!-- You'd like to view the customer information on a map. In order to do that, the addresses need to be in a form that can be easily geocoded. Create a new column full_address that concatenates the three address fields (address, city, country), separated by commas. -->
+
+```{r}
+refine_df <- refine_df %>%
+mutate(full_address = paste(address, city, country, sep = ", "))
+
+refine_df$full_address
+```
+
+Create dummy variables for company and product category
+<!-- Both the company name and product category are categorical variables i.e. they take only a fixed set of values. In order to use them in further analysis you need to create dummy variables. Create dummy binary variables for each of them with the prefix company_ and product_ i.e.
+Add four binary (1 or 0) columns for company: company_philips, company_akzo, company_van_houten and company_unilever
+Add four binary (1 or 0) columns for product category: product_smartphone, product_tv, product_laptop and product_tablet -->
+
+```{r}
+refine_df <- refine_df %>%
+mutate(company_philips = ifelse(company == "philips",1,0 )) %>%
+mutate(company_akzo = ifelse(company == "akzo",1,0 )) %>%
+mutate(company_van_houten = ifelse(company == "van houten",1,0 )) %>%
+mutate(company_unilever = ifelse(company == "unilever",1,0 )) %>%
+mutate(product_smartphone = ifelse(product_category == "Smartphone",1,0)) %>%
+mutate(product_tv = ifelse(product_category == "TV",1,0)) %>%
+mutate(product_laptop = ifelse(product_category == "Laptop",1,0)) %>%
+mutate(product_tablet = ifelse(product_category == "Tablet",1,0))
+```
+
+Output cleaned up file
+```{r}
+write.csv(refine_df, file="refine_clean.csv")
+```
+
+
