@@ -92,7 +92,7 @@ mutate(product_tablet = ifelse(product_category == "Tablet",1,0))
 ```
 
 Output cleaned up file
-```{r}
+```
 write.csv(refine_df, file="refine_clean.csv")
 ```
 
