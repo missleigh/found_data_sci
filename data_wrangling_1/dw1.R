@@ -18,9 +18,10 @@ refine_df <- refine_df %>%
   
   # refine_co <- refine_df %>%
   mutate(company = ifelse(first_letter == "p", "philips",
+                          ifelse(first_letter == "f", "philips",
                           ifelse(first_letter == "a", "akzo",
                                  ifelse(first_letter == "v", "van houten",
-                                        ifelse(first_letter == "u", "unilever","unknown")))))
+                                        ifelse(first_letter == "u", "unilever","unknown"))))))
 
 # Separate product code and number
 refine_df <- refine_df %>%

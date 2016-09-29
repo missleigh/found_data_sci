@@ -30,11 +30,12 @@ mutate(first_letter = substr(tolower(company),1,1)) %>%
 
 # refine_df$first_letter
 
-# refine_co <- refine_df %>%
+# refine_df <- refine_df %>%
 mutate(company = ifelse(first_letter == "p", "philips",
+  ifelse(first_letter == "f", "philips",
 		ifelse(first_letter == "a", "akzo",
 		ifelse(first_letter == "v", "van houten",
-			ifelse(first_letter == "u", "unilever","unknown")))))
+			ifelse(first_letter == "u", "unilever","unknown"))))))
 
 refine_df$company
 ```

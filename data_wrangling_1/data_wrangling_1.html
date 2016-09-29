@@ -141,16 +141,17 @@ mutate(first_letter = substr(tolower(company),1,1)) %&gt;%
 
 # refine_df$first_letter
 
-# refine_co &lt;- refine_df %&gt;%
+# refine_df &lt;- refine_df %&gt;%
 mutate(company = ifelse(first_letter == &quot;p&quot;, &quot;philips&quot;,
+  ifelse(first_letter == &quot;f&quot;, &quot;philips&quot;,
         ifelse(first_letter == &quot;a&quot;, &quot;akzo&quot;,
         ifelse(first_letter == &quot;v&quot;, &quot;van houten&quot;,
-            ifelse(first_letter == &quot;u&quot;, &quot;unilever&quot;,&quot;unknown&quot;)))))
+            ifelse(first_letter == &quot;u&quot;, &quot;unilever&quot;,&quot;unknown&quot;))))))
 
 refine_df$company</code></pre>
 <pre><code>##  [1] &quot;philips&quot;    &quot;philips&quot;    &quot;philips&quot;    &quot;philips&quot;    &quot;philips&quot;   
 ##  [6] &quot;philips&quot;    &quot;akzo&quot;       &quot;akzo&quot;       &quot;akzo&quot;       &quot;akzo&quot;      
-## [11] &quot;akzo&quot;       &quot;akzo&quot;       &quot;akzo&quot;       &quot;philips&quot;    &quot;unknown&quot;   
+## [11] &quot;akzo&quot;       &quot;akzo&quot;       &quot;akzo&quot;       &quot;philips&quot;    &quot;philips&quot;   
 ## [16] &quot;philips&quot;    &quot;van houten&quot; &quot;van houten&quot; &quot;van houten&quot; &quot;van houten&quot;
 ## [21] &quot;van houten&quot; &quot;unilever&quot;   &quot;unilever&quot;   &quot;unilever&quot;   &quot;unilever&quot;</code></pre>
 <p>Separate product code and number <!-- Separate the product code and product number into separate columns i.e. add two new columns called product_code and product_number, containing the product code and number respectively --></p>
