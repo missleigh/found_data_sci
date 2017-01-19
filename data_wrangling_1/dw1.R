@@ -39,10 +39,14 @@ refine_df <- refine_df %>%
 # Add full address for geocoding
 refine_df <- refine_df %>%
   mutate(full_address = paste(address, city, country, sep = ", "))
+# alternate method
+# refine_df <- unite(refine_df, "full_address", address, city, country, sep = ",")
 
 # Create dummy variables for company and product category
 refine_df <- refine_df %>%
 mutate(company_philips = ifelse(company == "philips",1,0 )) %>%
+ # alternate method
+ # refine_df$phillips <- as.numeric(df$company == "phillips") # plain R, faster than mutate on large datasets
 mutate(company_akzo = ifelse(company == "akzo",1,0 )) %>%
 mutate(company_van_houten = ifelse(company == "van houten",1,0 )) %>%
 mutate(company_unilever = ifelse(company == "unilever",1,0 )) %>%
