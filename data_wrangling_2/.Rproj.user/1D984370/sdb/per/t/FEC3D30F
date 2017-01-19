@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1484783077326.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "FEC3D30F",
+    "lastKnownWriteTime" : 6,
+    "last_content_update" : 1484783077326,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "890297B6",
+        "caption" : "titanic",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=titanic&cache_key=890297B6",
+        "displayedObservations" : "1310",
+        "environment" : "",
+        "object" : "titanic",
+        "preview" : "0",
+        "totalObservations" : "1310",
+        "variables" : "15"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

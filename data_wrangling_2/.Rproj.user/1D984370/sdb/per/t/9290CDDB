@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "categories = c(p = \"smartphone\", v = \"tv\", x = \"laptop\", q = \"tablet\") \nproduct_category <- categories[df$product.code] # define new variable product_category, rather than ifelse\ndf <- mutate(df, product.cat = product_category) # not needed, could just do df$product.cat == df$product_category\n\nor\ncategories = c(p = \"smartphone\", v = \"tv\", x = \"laptop\", q = \"tablet\") \ndf$product.cat <- categories[df$product.code]",
+    "created" : 1484349021452.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1035873428",
+    "id" : "9290CDDB",
+    "lastKnownWriteTime" : 1475178880,
+    "last_content_update" : 1475178880,
+    "path" : "~/workspace/found_data_sci/data_wrangling_1/dw1_alternate_solutions.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

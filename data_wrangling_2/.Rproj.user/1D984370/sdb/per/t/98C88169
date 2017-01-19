@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# title: \"Data Wrangling 2\"\n# author: \"Leigh Fonseca\"\n# date: \"2017-01-18\"\n\n\n# library(tidyr)\nlibrary(dplyr)\n\n# Load CSV file and create a data frame\ntitanic_original <- read.csv(\"~/workspace/found_data_sci/data_wrangling_2/titanic_original.csv\", head= TRUE, sep = \",\",blank.lines.skip = TRUE, strip.white = TRUE, na.strings=c(\"NA\",\"NaN\", \"\",\" \"))\ntitanic <- tbl_df(titanic_original)\n# str(titanic)\n\n# 1: Port of embarkation\n\nreplace_embark <- function(x) {\n  x[sapply(x, is.na)] <-\"S\"\n  return(x)\n}\ntitanic$embarked <- replace_embark(titanic$embarked)\n#titanic$embarked\n\n# 2: Age - replace NA with mean\n\ntitanic$age <- ifelse(is.na(titanic$age), mean(titanic$age, na.rm = TRUE),titanic$age)\n#titanic$age \n\n# 3: Lifeboat - replace NA with a dummy value: NB - no boat\n\ntitanic$boat <- ifelse(is.na(titanic$boat), \"NB\", titanic$boat)\n#titanic$boat\n\n# 4: Cabin - Many passengers don’t have a cabin number. Create a new column has_cabin_number\ntitanic$has_cabin_number <-as.numeric(!is.na(titanic$cabin))\n#titanic$has_cabin_number\n\nwrite.csv(titanic, file=\"titanic_clean.csv\")\n\n",
+    "created" : 1484778017690.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "481341937",
+    "id" : "98C88169",
+    "lastKnownWriteTime" : 1484784952,
+    "last_content_update" : 1484784952031,
+    "path" : "~/workspace/found_data_sci/data_wrangling_2/dw2.R",
+    "project_path" : "dw2.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

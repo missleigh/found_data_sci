@@ -1,0 +1,2 @@
+"0","titanic_original <- read.csv(""~/workspace/found_data_sci/data_wrangling_2/titanic_original.csv"", head= TRUE, sep = "","",blank.lines.skip = TRUE, strip.white = TRUE, na.strings=c(""NA"",""NaN"", """","" ""))"
+"0","titanic <- tbl_df(titanic_original)"

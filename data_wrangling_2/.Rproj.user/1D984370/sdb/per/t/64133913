@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# title: \"Data Wrangling 1\"\n# author: \"Leigh Fonseca\"\n# date: \"September 24, 2016\"\n\n\nlibrary(tidyr)\nlibrary(dplyr)\n\n# Load CSV file and create a data frame\nrefine_original <- read.csv(\"refine_original.csv\")\nrefine_df <- tbl_df(refine_original)\n\n# Clean up brand names\nrefine_df <- refine_df %>%\n  mutate(first_letter = substr(tolower(company),1,1)) %>%\n  \n  # refine_df$first_letter\n  \n  # refine_co <- refine_df %>%\n  mutate(company = ifelse(first_letter == \"p\", \"philips\",\n                          ifelse(first_letter == \"f\", \"philips\",\n                          ifelse(first_letter == \"a\", \"akzo\",\n                                 ifelse(first_letter == \"v\", \"van houten\",\n                                        ifelse(first_letter == \"u\", \"unilever\",\"unknown\"))))))\n\n# Separate product code and number\nrefine_df <- refine_df %>%\n  separate(Product.code...number, into = c(\"product_code\",\"product_number\"), sep = \"-\")\n\n# Transform Product Codes to Product Categories\nrefine_df <- refine_df %>%\n  mutate(product_category = ifelse(product_code == \"p\", \"Smartphone\",\n                                   ifelse(product_code == \"v\", \"TV\",\n                                          ifelse(product_code == \"x\", \"Laptop\",\n                                                 ifelse(product_code == \"q\", \"Tablet\", \"Unknown\")))))\n\n# refine_df$product_category\n\n# Add full address for geocoding\nrefine_df <- refine_df %>%\n  mutate(full_address = paste(address, city, country, sep = \", \"))\n# alternate method\n# refine_df <- unite(refine_df, \"full_address\", address, city, country, sep = \",\")\n\n# Create dummy variables for company and product category\nrefine_df <- refine_df %>%\nmutate(company_philips = ifelse(company == \"philips\",1,0 )) %>%\n # alternate method\n # refine_df$phillips <- as.numeric(df$company == \"phillips\") # plain R, faster than mutate on large datasets\nmutate(company_akzo = ifelse(company == \"akzo\",1,0 )) %>%\nmutate(company_van_houten = ifelse(company == \"van houten\",1,0 )) %>%\nmutate(company_unilever = ifelse(company == \"unilever\",1,0 )) %>%\nmutate(product_smartphone = ifelse(product_category == \"Smartphone\",1,0)) %>%\nmutate(product_tv = ifelse(product_category == \"TV\",1,0)) %>%\nmutate(product_laptop = ifelse(product_category == \"Laptop\",1,0)) %>%\nmutate(product_tablet = ifelse(product_category == \"Tablet\",1,0))\n\n# Output cleaned up file\n\nwrite.csv(refine_df, file=\"refine_clean.csv\")\n\n\n\n",
+    "created" : 1475178003388.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2497609430",
+    "id" : "64133913",
+    "lastKnownWriteTime" : 1484350542,
+    "last_content_update" : 1484350542948,
+    "path" : "~/workspace/found_data_sci/data_wrangling_1/dw1.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Data Wrangling 2\"\nauthor: \"Leigh Fonseca\"\ndate: \"2017-01-18\"\noutput: html_document\n---\n\n\n```{r setup, include=FALSE, echo=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\nLoad dplyr to cleanup dataset\n```{r, echo=FALSE, results='hold'}\n# library(tidyr)\nlibrary(dplyr)\n```\n\nLoad Titanic dataset\n\n```{r}\ntitanic_original <- read.csv(\"~/workspace/found_data_sci/data_wrangling_2/titanic_original.csv\", head= TRUE, sep = \",\",blank.lines.skip = TRUE, strip.white = TRUE, na.strings=c(\"NA\",\"NaN\", \"\",\" \"))\ntitanic <- tbl_df(titanic_original)\n```\n\nThe embarked column has some missing values, which are known to correspond to passengers who actually embarked at Southampton. Find the missing values and replace them with S.\n\n```{r}\nreplace_embark <- function(x) {\n  x[sapply(x, is.na)] <-\"S\"\n  return(x)\n}\ntitanic$embarked <- replace_embark(titanic$embarked)\n```\n\nThe Age column has some missing values.  After evaluating the mean (29.88113) and the median (28), replace the missing values with the mean.\n\n```{r}\ntitanic$age <- ifelse(is.na(titanic$age), mean(titanic$age, na.rm = TRUE),titanic$age)\n```\n\nSeveral of the passengers did not make it on to a boat. Update these missing values with \"NB\" for no boat.\n\n```{r}\ntitanic$boat <- ifelse(is.na(titanic$boat), \"NB\", titanic$boat)\n```\n\nSeveral of the passengers do not have a cabin. Create a new column called has_cabin_number and assign 1 to those who had a cabin number and 0 to those who did not.\n\n```{r}\ntitanic$has_cabin_number <-as.numeric(!is.na(titanic$cabin))\n```\n\nOutput cleaned up data as titanic_clean.csv. The original data is in titanic_original.csv.\n\n```{r}\nwrite.csv(titanic, file=\"titanic_clean.csv\")\n```\n",
+    "created" : 1474750216601.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3288612863",
+    "id" : "1CA034BA",
+    "lastKnownWriteTime" : 1484785599,
+    "last_content_update" : 1484785599971,
+    "path" : "~/workspace/found_data_sci/data_wrangling_2/data_wrangling_2.Rmd",
+    "project_path" : "data_wrangling_2.Rmd",
+    "properties" : {
+        "last_setup_crc32" : "DF066E4Bbb338d19",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
