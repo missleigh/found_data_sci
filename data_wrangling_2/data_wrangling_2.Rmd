@@ -1,0 +1,58 @@
+---
+title: "Data Wrangling 2"
+author: "Leigh Fonseca"
+date: "2017-01-18"
+output: html_document
+---
+
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load dplyr to cleanup dataset
+```{r, echo=FALSE, results='hold'}
+# library(tidyr)
+library(dplyr)
+```
+
+Load Titanic dataset
+
+```{r}
+titanic_original <- read.csv("~/workspace/found_data_sci/data_wrangling_2/titanic_original.csv", head= TRUE, sep = ",",blank.lines.skip = TRUE, strip.white = TRUE, na.strings=c("NA","NaN", ""," "))
+titanic <- tbl_df(titanic_original)
+```
+
+The embarked column has some missing values, which are known to correspond to passengers who actually embarked at Southampton. Find the missing values and replace them with S.
+
+```{r}
+replace_embark <- function(x) {
+  x[sapply(x, is.na)] <-"S"
+  return(x)
+}
+titanic$embarked <- replace_embark(titanic$embarked)
+```
+
+The Age column has some missing values.  After evaluating the mean (29.88113) and the median (28), replace the missing values with the mean.
+
+```{r}
+titanic$age <- ifelse(is.na(titanic$age), mean(titanic$age, na.rm = TRUE),titanic$age)
+```
+
+Several of the passengers did not make it on to a boat. Update these missing values with "NB" for no boat.
+
+```{r}
+titanic$boat <- ifelse(is.na(titanic$boat), "NB", titanic$boat)
+```
+
+Several of the passengers do not have a cabin. Create a new column called has_cabin_number and assign 1 to those who had a cabin number and 0 to those who did not.
+
+```{r}
+titanic$has_cabin_number <-as.numeric(!is.na(titanic$cabin))
+```
+
+Output cleaned up data as titanic_clean.csv. The original data is in titanic_original.csv.
+
+```{r}
+write.csv(titanic, file="titanic_clean.csv")
+```
