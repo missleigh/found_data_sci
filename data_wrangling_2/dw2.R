@@ -9,6 +9,7 @@ library(dplyr)
 # Load CSV file and create a data frame
 titanic_original <- read.csv("~/workspace/found_data_sci/data_wrangling_2/titanic_original.csv", head= TRUE, sep = ",",blank.lines.skip = TRUE, strip.white = TRUE, na.strings=c("NA","NaN", ""," "))
 titanic <- tbl_df(titanic_original)
+
 # str(titanic)
 
 # 1: Port of embarkation
