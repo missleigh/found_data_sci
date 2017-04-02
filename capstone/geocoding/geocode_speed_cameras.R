@@ -6,11 +6,36 @@ library(httr)
 library(jsonlite)
 library(dplyr)
 
+# load violations data
 speed_camera_violations <- read_csv("~/workspace/found_data_sci/capstone/datasource/Speed_Camera_Violations.csv")
 View(speed_camera_violations)
 
 # rename StreetAddress to remove special character from column name
 colnames(speed_camera_violations) [1] <- "StreetAddress"
+
+# create dataframe of addresses missing latitude
+scv_sample <- sqldf("select distinct StreetAddress, CameraId from speed_camera_violations where Latitude is null", row.names=TRUE)
+#View(scv_sample)
+
+# add Chicago as city
+scv_sample$city <- 'Chicago'
+
+# create column with streetAddress + Chicago for geocoding
+scv_sample$geo <- paste(scv_sample$StreetAddress,'+',scv_sample$city)
+
+# get missing lat/lon 
+scv_geo <- geocode(scv_sample$geo)
+
+# bind lat/lon to address
+scv_geo_update <- cbind(scv_sample, scv_geo)
+
+View(scv_geo_update)
+
+# update missing lat/lon in speed_camera_violations
+
++++++
+
+
 
 # add a column for violation type and assign Speeding
 speed_camera_violations$violation_type <- "Speeding"
