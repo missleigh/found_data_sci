@@ -1,35 +1,64 @@
-library(tidyverse)
+library(ggmap)
+library(tidyr)
+library(dplyr)
 
 # craete a data frame for speed camera locations
-redlight_camera_violations <- read_csv("~/workspace/found_data_sci/capstone/datasource/Red_Light_Camera_Violations.csv", na = "NA")
-colnames(redlight_camera_violations)  [1] <- "intersection"
+redlight_camera_violations <- read_csv("~/workspace/found_data_sci/capstone/source_files/Red_Light_Camera_Violations.csv", na = "NA")
 
-# create address joinable column
-redlight_camera_violations$address_join <- 
-# remove street type from end
-  gsub(pattern = "$ ST|$ BLVD| RD|$ DR|$ HWY|$ AVE|$ PARK|$  DRIVE", replacement = "", x = redlight_camera_violations$intersection, ignore.case = TRUE)
+#replace empty strings with NA
+redlight_camera_violations[redlight_camera_violations ==""] = NA
 
-# remove street type and "AND " from string
-redlight_camera_violations$address_join <- 
-  gsub(pattern = " ST AND | BLVD AND | RD AND | DR AND | HWY AND | AVE AND | PARK AND ", replacement = "-", x = redlight_camera_violations$intersection, ignore.case = TRUE)
+# update colunm names
+colnames(redlight_camera_violations) [1:10] = c("intersection", "camera_id","address","violation_date","violations","x_coord","y_coord","latitude","longitude","location")
 
-# remove " AND " from string
-redlight_camera_violations$address_join <- 
-  gsub(pattern = " AND ", replacement = "-", x = redlight_camera_violations$address_join, ignore.case = TRUE)
+# check your work
+glimpse(redlight_camera_violations)
 
-# Create new column for City
+# add columns for violation type to later join with speed camera data
+redlight_camera_violations$violation_type <- "Red Light"
+
+# add column city for lat/lon lookup
 redlight_camera_violations$city <- "Chicago"
 
-# Get distinct list of redlight camera locations for geocoding
-redlight_camera_locations <- redlight_camera_violations %>%
-  select(address_join,city) %>%
-  distinct()
+# create a df for missing lat/lon values to lookup
+missing_light_locations <- distinct(redlight_camera_violations, camera_id, address, .keep_all = TRUE) %>%
+  filter(is.na(latitude)) %>%
+  select(camera_id, address, city)
 
-redlight_camera_locations$geo_lookup <- paste(redlight_camera_locations$address_join,redlight_camera_locations$city) 
+# add address_city column for geocode function
+missing_light_locations$address_city <- paste(missing_light_locations$address,'+',missing_light_locations$city)
+# glimpse(missing_light_locations)
 
-View(redlight_camera_locations)
+# lookup missing lat/lon
+missing_light_geo <- geocode(missing_light_locations$address_city)
 
-rl_coords <- data_frame(redlight_camera_locations)
+# bind missing light locations and lat/lon
+missing_light_locations_geo <- bind_cols(missing_light_locations, missing_light_geo)
 
-View(redlight_camera_violations)
+# drop unneeded columns
+missing_light_locations_geo <-subset(missing_light_locations_geo, select = -c(address_city, city))
 
+# create new df with 
+redlight_violations_geo <- left_join(redlight_camera_violations, missing_light_locations_geo, by="camera_id")
+
+#update column names for lat/lon swap
+# setnames(redlight_violations_geo, old = c('address.x','latitude','longitude'), new = c('address','lat_original','lon_original')) 
+names(redlight_violations_geo)[3] <- "address"
+names(redlight_violations_geo)[8] <- "lat_original"
+names(redlight_violations_geo)[9] <- "lon_original"
+
+redlight_violations_geo <- redlight_violations_geo %>% 
+  mutate(latitude = ifelse(is.na(lat_original), lat, lat_original)) %>%
+  mutate(longitude = ifelse(is.na(lon_original), lon, lon_original))
+
+# remove unneeded columns  
+redlight_violations_geo <- subset(redlight_violations_geo, select = -c(address.y,x_coord,y_coord,lat,lon,lat_original,lon_original,location))
+
+glimpse(redlight_violations_geo)
+
+# reorder columns to match speed camera output file
+redlight_violations_geo <- redlight_violations_geo[c(3,2,4,5,6,7,8,9,1)]
+
+
+# write file with violations, violation type and lat lon
+write.csv(redlight_violations_geo, file="~/workspace/found_data_sci/capstone/updated_files/red_light_violations_geo.csv", na="")
